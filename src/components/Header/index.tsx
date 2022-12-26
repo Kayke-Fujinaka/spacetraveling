@@ -5,13 +5,15 @@ import { Container } from './styles';
 export default function Header() {
   return (
     <Container className="wrapper">
-      <Image
-        src={logo}
-        alt="spacetraveling. logo"
-        loading="lazy"
-        width={238.62}
-        height={25.63}
-      />
+      <a href="#">
+        <Image
+          src={logo}
+          alt="spacetraveling. logo"
+          loading="lazy"
+          width={238.62}
+          height={25.63}
+        />
+      </a>
     </Container>
   );
 }
