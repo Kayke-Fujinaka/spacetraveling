@@ -26,6 +26,12 @@ const GlobalStyle = createGlobalStyle<{ theme: ITheme }>`
     ul {
       list-style: none;
     }
+
+    .wrapper {
+      width: min(58rem, 100%);
+      margin-inline: auto;
+      padding-inline: 2.4rem;
+    }
   `}
 `;
 
