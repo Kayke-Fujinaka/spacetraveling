@@ -1,13 +1,16 @@
+import Link from 'next/link';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
 import Info from './Info';
 import { Infos, Subtitle, Title } from './styles';
 
 interface IPost {
-  id: string;
-  date: string | null;
-  title: string;
-  subtitle: string;
-  author: string;
+  uid?: string;
+  first_publication_date: string | null;
+  data: {
+    title: string;
+    subtitle: string;
+    author: string;
+  };
 }
 
 interface IPostProps {
@@ -23,26 +26,28 @@ interface IInfos {
 export default function Post({ post }: IPostProps) {
   const infos: IInfos[] = [
     {
-      id: post.id,
-      content: post.date,
+      id: post.uid,
+      content: post.first_publication_date,
       icon: <AiOutlineCalendar size={20} />,
     },
     {
-      id: post.id,
-      content: post.author,
+      id: post.uid,
+      content: post.data.author,
       icon: <AiOutlineUser size={20} />,
     },
   ];
 
   return (
-    <article key={post.id}>
-      <Title>{post.title}</Title>
-      <Subtitle>{post.subtitle}</Subtitle>
-      <Infos>
-        {infos.map(info => (
-          <Info id={info.id} icon={info.icon} content={info.content} />
-        ))}
-      </Infos>
-    </article>
+    <Link href={`/post/${post.uid}`} key={post.uid}>
+      <article>
+        <Title>{post.data.title}</Title>
+        <Subtitle>{post.data.subtitle}</Subtitle>
+        <Infos>
+          {infos.map((info, idx) => (
+            <Info key={idx} infos={info} />
+          ))}
+        </Infos>
+      </article>
+    </Link>
   );
 }
