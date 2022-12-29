@@ -23,6 +23,10 @@ const GlobalStyle = createGlobalStyle<{ theme: ITheme }>`
       font-size: 1rem;
     }
 
+    a {
+      text-decoration: none;
+    }
+
     ul {
       list-style: none;
     }
