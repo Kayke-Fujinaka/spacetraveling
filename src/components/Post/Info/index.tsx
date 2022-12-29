@@ -1,16 +1,18 @@
 import * as S from './styles';
 
 interface IInfos {
-  id: string;
-  content: string;
-  icon: JSX.Element;
+  infos: {
+    id: string;
+    content: string;
+    icon: JSX.Element;
+  };
 }
 
-export default function Info({ id, icon, content }: IInfos) {
+export default function Info({ infos }: IInfos) {
   return (
-    <S.Info key={id}>
-      {icon}
-      <p>{content}</p>
+    <S.Info key={infos.id}>
+      {infos.icon}
+      <p>{infos.content}</p>
     </S.Info>
   );
 }
