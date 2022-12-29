@@ -1,9 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
-
 import { getPrismicClient } from '../../services/prismic';
-
-import commonStyles from '../../styles/common.module.scss';
-import styles from './post.module.scss';
 
 interface Post {
   first_publication_date: string | null;
@@ -26,20 +22,31 @@ interface PostProps {
   post: Post;
 }
 
-// export default function Post() {
-//   // TODO
-// }
+export default function Post(response, posts): JSX.Element {
+  console.log('response', response);
+  console.log('posts', posts);
+  return (
+    <div>
+      <h1>Post</h1>
+    </div>
+  );
+}
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient({});
-//   const posts = await prismic.getByType(TODO);
+export const getStaticPaths: GetStaticPaths = async () => {
+  const prismic = getPrismicClient({});
+  const pages = await prismic.getAllByType('post');
 
-//   // TODO
-// };
+  return {
+    paths: pages.map(page => page.uid),
+    fallback: true,
+  };
+};
 
-// export const getStaticProps = async ({params }) => {
-//   const prismic = getPrismicClient({});
-//   const response = await prismic.getByUID(TODO);
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const prismic = getPrismicClient({});
+  const response = await prismic.getByUID('post', 'como-utilizar-hooks');
 
-//   // TODO
-// };
+  return {
+    props: response,
+  };
+};
