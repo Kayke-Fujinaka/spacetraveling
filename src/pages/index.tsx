@@ -68,7 +68,7 @@ export default function Home({ postsPagination }: HomeProps) {
       <Main className="wrapper">
         {posts && posts.map(post => <Post key={post.uid} post={post} />)}
         {nextPage && (
-          <SeeMore>
+          <SeeMore onClick={handleNextPage}>
             <span>Carregar mais posts</span>
           </SeeMore>
         )}

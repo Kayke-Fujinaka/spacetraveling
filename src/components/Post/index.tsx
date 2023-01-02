@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import { AiOutlineCalendar, AiOutlineUser } from 'react-icons/ai';
+import { Heading } from '../Heading';
 import Info from './Info';
-import { Infos, Subtitle, Title } from './styles';
+import { Infos, Subtitle } from './styles';
 
 interface IPost {
   uid?: string;
@@ -40,7 +41,7 @@ export default function Post({ post }: IPostProps) {
   return (
     <Link href={`/post/${post.uid}`} key={post.uid}>
       <article>
-        <Title>{post.data.title}</Title>
+        <Heading>{post.data.title}</Heading>
         <Subtitle>{post.data.subtitle}</Subtitle>
         <Infos>
           {infos.map((info, idx) => (
