@@ -21,7 +21,7 @@ export const Title = styled.h1<IHeadingProps>`
     line-height: ${headingLineHeights[lineHeight]};
     color: ${theme.colors.heading};
 
-    ${letterSpacing &&
+    ${!letterSpacing &&
     css`
       letter-spacing: -0.5px;
     `}

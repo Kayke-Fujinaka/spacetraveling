@@ -10,7 +10,7 @@ export interface IHeadingProps {
 
 export function Heading({
   size = 'lg',
-  letterSpacing = true,
+  letterSpacing = false,
   lineHeight = 'sm',
   children,
 }: IHeadingProps) {

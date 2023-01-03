@@ -5,7 +5,7 @@ import { Container } from './styles';
 export default function Header() {
   return (
     <Container>
-      <a href="#">
+      <a href="/">
         <Image
           src={logo}
           alt="spacetraveling. logo"
