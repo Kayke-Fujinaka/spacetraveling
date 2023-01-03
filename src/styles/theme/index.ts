@@ -5,6 +5,7 @@ export default {
     info: '#BBBBBB',
     text: '#D7D7D7',
     background: '#1A1D23',
+    black: '#000000',
   },
   fontSizes: {
     sm: '0.875rem',
