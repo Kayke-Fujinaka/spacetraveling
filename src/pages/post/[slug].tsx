@@ -1,3 +1,4 @@
+import { RichText } from 'prismic-dom';
 import {
   AiOutlineCalendar,
   AiOutlineClockCircle,
@@ -6,10 +7,14 @@ import {
 import Header from '../../components/Header';
 import { Heading } from '../../components/Heading';
 import Info from '../../components/Post/Info';
-import { Article, Infos, Main, Text } from '../../styles/pages/Post';
+import { getPrismicClient } from '../../services/prismic';
+import { Article, Image, Infos, Main, Text } from '../../styles/pages/Post';
+import { formattedDate } from '../../utils/dateFormat';
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
+  uid: string;
   data: {
     title: string;
     banner: {
@@ -29,98 +34,103 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post(response, uid) {
+interface IInfos {
+  id: string;
+  content: string;
+  icon: JSX.Element;
+}
+
+export default function Post({ post }: PostProps) {
+  const infos: IInfos[] = [
+    {
+      id: post.uid,
+      content: post.first_publication_date,
+      icon: <AiOutlineCalendar size={20} />,
+    },
+    {
+      id: post.uid,
+      content: post.data.author,
+      icon: <AiOutlineUser size={20} />,
+    },
+    {
+      id: post.uid,
+      content: '4 min',
+      icon: <AiOutlineClockCircle size={20} />,
+    },
+  ];
+  console.log(post);
   return (
     <>
       <Header />
-      <div className="test-img"></div>
+      <Image src={post.data.banner.url} alt={`${post.data.title} imagem`} />
       <Main className="wrapper">
         <header>
           <Heading size="xl2" lineHeight="xl2">
-            Criando um “ CRA do zero
+            {post.data.title}
           </Heading>
           <Infos>
-            <Info
-              infos={{
-                id: '12',
-                content: '15 Mar 2021',
-                icon: <AiOutlineCalendar size={20} />,
-              }}
-            />
-            <Info
-              infos={{
-                id: '112',
-                content: 'Joseph',
-                icon: <AiOutlineUser size={20} />,
-              }}
-            />
-            <Info
-              infos={{
-                id: '112',
-                content: '4 min',
-                icon: <AiOutlineClockCircle size={20} />,
-              }}
-            />
+            {infos.map((info, idx) => (
+              <Info key={idx} infos={info} />
+            ))}
           </Infos>
         </header>
-        <Article>
-          <Heading size="xl" letterSpacing={false} lineHeight="sm">
-            Proin et varius
-          </Heading>
-          <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-            dolor sapien, vulputate eu diam at, condimentum hendrerit tellus.
-            Nam facilisis sodales felis, pharetra pharetra lectus auctor sed. Ut
-            venenatis mauris vel libero pretium, et pretium ligula faucibus.
-            Morbi nibh felis, elementum a posuere et, vulputate et erat. Nam
-            venenatis.
-          </Text>
-        </Article>
-        <Article>
-          <Heading size="xl" letterSpacing={false} lineHeight="sm">
-            Proin et varius
-          </Heading>
-          <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-            dolor sapien, vulputate eu diam at, condimentum hendrerit tellus.
-            Nam facilisis sodales felis, pharetra pharetra lectus auctor sed. Ut
-            venenatis mauris vel libero pretium, et pretium ligula faucibus.
-            Morbi nibh felis, elementum a posuere et, vulputate et erat. Nam
-            venenatis.
-          </Text>
-        </Article>
-        <Article>
-          <Heading size="xl" letterSpacing={false} lineHeight="sm">
-            Proin et varius
-          </Heading>
-          <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-            dolor sapien, vulputate eu diam at, condimentum hendrerit tellus.
-            Nam facilisis sodales felis, pharetra pharetra lectus auctor sed. Ut
-            venenatis mauris vel libero pretium, et pretium ligula faucibus.
-            Morbi nibh felis, elementum a posuere et, vulputate et erat. Nam
-            venenatis.
-          </Text>
-        </Article>
+        {post.data.content.map(content => {
+          return (
+            <Article key={content.heading}>
+              <Heading size="xl" letterSpacing lineHeight="sm">
+                Proin et varius
+              </Heading>
+              <Text
+                dangerouslySetInnerHTML={{
+                  __html: RichText.asHtml(content.body),
+                }}
+              />
+            </Article>
+          );
+        })}
       </Main>
     </>
   );
 }
 
-// export const getStaticPaths = async () => {
-//   const prismic = getPrismicClient({});
-//   const posts = await prismic.getByType('post');
+export const getStaticPaths = async () => {
+  const prismic = getPrismicClient({});
+  const posts = await prismic.getByType('post');
 
-//   return {
-//     props: posts,
-//   };
-// };
+  const paths = posts.results.map(post => {
+    return {
+      params: {
+        slug: post.uid,
+      },
+    };
+  });
 
-// export const getStaticProps = async ({ params }) => {
-//   const prismic = getPrismicClient({});
-//   const response = await prismic.getByUID('post', params.id);
+  return {
+    paths,
+    fallback: true,
+  };
+};
 
-//   return {
-//     props: response,
-//   };
-// };
+export const getStaticProps = async ({ params }) => {
+  const { slug } = params;
+  const prismic = getPrismicClient({});
+  const response = await prismic.getByUID('post', String(slug), {});
+
+  const post: Post = {
+    uid: response.uid,
+    first_publication_date: formattedDate(response.first_publication_date),
+    last_publication_date: formattedDate(response.last_publication_date),
+    data: {
+      title: response.data.title,
+      author: response.data.author,
+      banner: {
+        url: response.data.banner.url,
+      },
+      content: response.data.content,
+    },
+  };
+
+  return {
+    props: { post },
+  };
+};
