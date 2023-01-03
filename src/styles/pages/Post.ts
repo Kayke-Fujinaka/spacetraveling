@@ -6,10 +6,23 @@ export const Main = styled.main`
   `}
 `;
 
+export const Image = styled.img`
+  ${({ theme }) => css`
+    height: 200px;
+    width: 100%;
+    background-color: ${theme.colors.black};
+
+    @media (min-width: 925px) {
+      height: 400px;
+    }
+  `}
+`;
+
 export const Infos = styled.div`
   ${({ theme }) => css`
     display: flex;
     gap: ${theme.spaces[6]};
+    margin-top: ${theme.spaces[6]};
   `}
 `;
 
@@ -22,7 +35,7 @@ export const Article = styled.article`
   `}
 `;
 
-export const Text = styled.p`
+export const Text = styled.div`
   ${({ theme }) => css`
     text-align: justify;
     margin-block: ${theme.spaces[2]} ${theme.spaces[6]};
