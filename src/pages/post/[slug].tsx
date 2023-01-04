@@ -11,7 +11,6 @@ import Info from '../../components/Post/Info';
 import { getPrismicClient } from '../../services/prismic';
 import { Article, Image, Infos, Main, Text } from '../../styles/pages/Post';
 import { formattedDate } from '../../utils/dateFormat';
-
 interface Post {
   first_publication_date: string | null;
   last_publication_date: string | null;
@@ -132,26 +131,30 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params }) => {
-  const { slug } = params;
+  try {
+    const { slug } = params;
 
-  const prismic = getPrismicClient({});
-  const response = await prismic.getByUID('post', String(slug), {});
+    const prismic = getPrismicClient({});
+    const response = await prismic.getByUID('post', String(slug), {});
 
-  const post: Post = {
-    uid: response.uid,
-    first_publication_date: formattedDate(response.first_publication_date),
-    last_publication_date: formattedDate(response.last_publication_date),
-    data: {
-      title: response.data.title,
-      author: response.data.author,
-      banner: {
-        url: response.data.banner.url,
+    const post: Post = {
+      uid: response.uid,
+      first_publication_date: formattedDate(response.first_publication_date),
+      last_publication_date: formattedDate(response.last_publication_date),
+      data: {
+        title: response.data.title,
+        author: response.data.author,
+        banner: {
+          url: response.data.banner.url,
+        },
+        content: response.data.content,
       },
-      content: response.data.content,
-    },
-  };
+    };
 
-  return {
-    props: { post },
-  };
+    return {
+      props: { post },
+    };
+  } catch (err) {
+    return { notFound: true };
+  }
 };
