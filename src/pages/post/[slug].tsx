@@ -13,7 +13,6 @@ import { Article, Image, Infos, Main, Text } from '../../styles/pages/Post';
 import { formattedDate } from '../../utils/dateFormat';
 interface Post {
   first_publication_date: string | null;
-  last_publication_date: string | null;
   uid: string;
   data: {
     title: string;
@@ -140,7 +139,6 @@ export const getStaticProps = async ({ params }) => {
     const post: Post = {
       uid: response.uid,
       first_publication_date: formattedDate(response.first_publication_date),
-      last_publication_date: formattedDate(response.last_publication_date),
       data: {
         title: response.data.title,
         author: response.data.author,

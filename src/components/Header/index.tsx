@@ -8,7 +8,7 @@ export default function Header() {
       <a href="/">
         <Image
           src={logo}
-          alt="spacetraveling. logo"
+          alt="logo"
           loading="lazy"
           width={238.62}
           height={25.63}
