@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { RichText } from 'prismic-dom';
 import {
   AiOutlineCalendar,
@@ -41,6 +42,25 @@ interface IInfos {
 }
 
 export default function Post({ post }: PostProps) {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <h1>Carregando...</h1>;
+  }
+
+  const totalWords = post.data.content.reduce((total, contentItem) => {
+    if (!contentItem.heading) return;
+
+    total += contentItem.heading.split('').length;
+
+    const words = contentItem.body.map(item => item.text.split(' ').length);
+
+    words.map(word => (total += word));
+    return total;
+  }, 0);
+
+  const readTime = Math.ceil(totalWords / 200);
+
   const infos: IInfos[] = [
     {
       id: post.uid,
@@ -54,11 +74,11 @@ export default function Post({ post }: PostProps) {
     },
     {
       id: post.uid,
-      content: '4 min',
+      content: `${readTime} min`,
       icon: <AiOutlineClockCircle size={20} />,
     },
   ];
-  console.log(post);
+
   return (
     <>
       <Header />
@@ -113,6 +133,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   const { slug } = params;
+
   const prismic = getPrismicClient({});
   const response = await prismic.getByUID('post', String(slug), {});
 
